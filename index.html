@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LETSARA - Uruguaiana</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #1F3066;
+        }
+        #carrossel {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        .slide {
+            position: absolute;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            width: 100%;
+            height: 100%;
+        }
+        .slide.active {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="carrossel">
+        <div class="slide active">
+            <img src="Agosto.png" alt="Imagem 1" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <div class="slide">
+            <img src="Carimbo1.png" alt="Imagem 2" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <div class="slide">
+            <img src="Carimbo2.png" alt="Imagem 3" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <div class="slide">
+            <img src="Envio.png" alt="Imagem 1" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+    </div>
+
+    <script>
+        let index = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showNextSlide() {
+            slides[index].classList.remove('active');
+            index = (index + 1) % totalSlides;
+            slides[index].classList.add('active');
+        }
+
+        setInterval(showNextSlide, 30000);
+    </script>
+
+</body>
+</html>
