@@ -35,50 +35,68 @@
 <body>
 
     <div id="carrossel">
-        <div class="slide active">
+        <div class="slide warnings-long active">
             <img src="Envio.png" alt="Imagem 1" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
-        <div class="slide">
+        <div class="slide warnings-long">
             <img src="Carimbo1.png" alt="Imagem 2" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
-        <div class="slide">
+        <div class="slide warnings-long">
             <img src="Carimbo2.png" alt="Imagem 3" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
-        <div class="slide">
+        <div class="slide warnings-long">
             <img src="ComunicadoPallets.jpeg" alt="Imagem 5" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
-                <div class="slide">
+                <div class="slide warnings-short">
             <img src="1.jpeg" alt="Imagem 6" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
-                <div class="slide">
+                <div class="slide warnings-short">
             <img src="2.jpeg" alt="Imagem 7" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
-                <div class="slide">
+                <div class="slide warnings-short">
             <img src="3.jpeg" alt="Imagem 8" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
-                <div class="slide">
+                <div class="slide warnings-short">
             <img src="4.jpeg" alt="Imagem 9" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
-                <div class="slide">
+                <div class="slide warnings-short">
             <img src="5.jpeg" alt="Imagem 10" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
-                <div class="slide">
+                <div class="slide warnings-short">
             <img src="6.jpeg" alt="Imagem 11" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
     </div>
 
     <script>
-        let index = 0;
-        const slides = document.querySelectorAll('.slide');
-        const totalSlides = slides.length;
+        const groups = [
+            { slides: document.querySelectorAll('.warnings-long'), duration: 20000 },
+            { slides: document.querySelectorAll('.warnings-short'), duration: 10000 }
+        ];
 
-        function showNextSlide() {
-            slides[index].classList.remove('active');
-            index = (index + 1) % totalSlides;
-            slides[index].classList.add('active');
+        let currentGroupIndex = 0;
+        let currentSlideIndex = 0;
+
+        function showSlide(groupIndex, slideIndex) {
+            document.querySelectorAll('.slide').forEach((slide) => slide.classList.remove('active'));
+            groups[groupIndex].slides[slideIndex].classList.add('active');
         }
 
-        setInterval(showNextSlide, 10000);
+        function nextSlide() {
+            const currentGroup = groups[currentGroupIndex];
+            currentSlideIndex += 1;
+
+            if (currentSlideIndex >= currentGroup.slides.length) {
+                currentGroupIndex = (currentGroupIndex + 1) % groups.length;
+                currentSlideIndex = 0;
+            }
+
+            const newGroup = groups[currentGroupIndex];
+            showSlide(currentGroupIndex, currentSlideIndex);
+            setTimeout(nextSlide, newGroup.duration);
+        }
+
+        showSlide(currentGroupIndex, currentSlideIndex);
+        setTimeout(nextSlide, groups[currentGroupIndex].duration);
     </script>
 
 </body>
