@@ -71,36 +71,92 @@
     </div>
 
     <script>
-        const groups = [
-            { slides: document.querySelectorAll('.warnings-long'), duration: 20000 },
-            { slides: document.querySelectorAll('.warnings-short'), duration: 10000 }
-        ];
+    const groups = [
+        { slides: document.querySelectorAll('.warnings-long'), duration: 20000 },
+        { slides: document.querySelectorAll('.warnings-short'), duration: 10000 }
+    ];
 
-        let currentGroupIndex = 0;
-        let currentSlideIndex = 0;
+    let currentGroupIndex = 0;
+    let currentSlideIndex = 0;
+    let timer;
 
-        function showSlide(groupIndex, slideIndex) {
-            document.querySelectorAll('.slide').forEach((slide) => slide.classList.remove('active'));
-            groups[groupIndex].slides[slideIndex].classList.add('active');
-        }
+    function showSlide(groupIndex, slideIndex) {
+        document.querySelectorAll('.slide').forEach((slide) => slide.classList.remove('active'));
+        groups[groupIndex].slides[slideIndex].classList.add('active');
+    }
 
-        function nextSlide() {
-            const currentGroup = groups[currentGroupIndex];
-            currentSlideIndex += 1;
+    function scheduleNext() {
+        clearTimeout(timer);
+        timer = setTimeout(nextSlide, groups[currentGroupIndex].duration);
+    }
 
-            if (currentSlideIndex >= currentGroup.slides.length) {
-                currentGroupIndex = (currentGroupIndex + 1) % groups.length;
-                currentSlideIndex = 0;
-            }
+    function nextSlide() {
+        const currentGroup = groups[currentGroupIndex];
+        currentSlideIndex++;
 
-            const newGroup = groups[currentGroupIndex];
-            showSlide(currentGroupIndex, currentSlideIndex);
-            setTimeout(nextSlide, newGroup.duration);
+        if (currentSlideIndex >= currentGroup.slides.length) {
+            currentGroupIndex = (currentGroupIndex + 1) % groups.length;
+            currentSlideIndex = 0;
         }
 
         showSlide(currentGroupIndex, currentSlideIndex);
-        setTimeout(nextSlide, groups[currentGroupIndex].duration);
-    </script>
+        scheduleNext();
+    }
+
+    function prevSlide() {
+        currentSlideIndex--;
+
+        if (currentSlideIndex < 0) {
+            currentGroupIndex = (currentGroupIndex - 1 + groups.length) % groups.length;
+            const newGroup = groups[currentGroupIndex];
+            currentSlideIndex = newGroup.slides.length - 1;
+        }
+
+        showSlide(currentGroupIndex, currentSlideIndex);
+        scheduleNext();
+    }
+
+    showSlide(currentGroupIndex, currentSlideIndex);
+    scheduleNext();
+
+
+    const carousel = document.getElementById("carrossel");
+
+    let startX = 0;
+    let endX = 0;
+
+    function handleGesture() {
+        const threshold = 50; // minimum drag distance
+
+        if (endX < startX - threshold) {
+            nextSlide(); // swipe left
+        }
+
+        if (endX > startX + threshold) {
+            prevSlide(); // swipe right
+        }
+    }
+
+    // Touch events
+    carousel.addEventListener("touchstart", (e) => {
+        startX = e.touches[0].clientX;
+    });
+
+    carousel.addEventListener("touchend", (e) => {
+        endX = e.changedTouches[0].clientX;
+        handleGesture();
+    });
+
+    // Mouse drag events
+    carousel.addEventListener("mousedown", (e) => {
+        startX = e.clientX;
+    });
+
+    carousel.addEventListener("mouseup", (e) => {
+        endX = e.clientX;
+        handleGesture();
+    });
+</script>
 
 </body>
 </html>
