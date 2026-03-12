@@ -128,8 +128,13 @@
             if (video) {
                 video.muted = true;
                 video.playbackRate = 1.25;
+                video.loop = false;
                 video.currentTime = 0;
-                video.onended = () => goToSlide(currentSlideIndex + 1);
+                video.onended = () => {
+                    video.pause();
+                    video.currentTime = 0;
+                    goToSlide(currentSlideIndex + 1);
+                };
 
                 const playPromise = video.play();
                 if (playPromise && typeof playPromise.catch === 'function') {
@@ -191,6 +196,16 @@
             pointerActive = false;
             carousel.classList.remove('dragging');
         }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                clearAutoAdvance();
+                stopAllVideos();
+                return;
+            }
+
+            goToSlide(currentSlideIndex);
+        });
 
         carousel.addEventListener('pointerdown', handlePointerDown);
         carousel.addEventListener('pointerup', handlePointerUp);
